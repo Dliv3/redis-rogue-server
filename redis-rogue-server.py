@@ -79,7 +79,7 @@ class RogueServer:
         elif data.startswith("REPLCONF"):
             resp = "+OK" + CLRF
             phase = 2
-        elif data.startswith("PSYNC") or data.startwith("SYNC"):
+        elif data.startswith("PSYNC") or data.startswith("SYNC"):
             resp = "+FULLRESYNC " + "Z"*40 + " 1" + CLRF
             resp += "$" + str(len(payload)) + CLRF
             resp = resp.encode()
