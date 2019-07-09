@@ -22,9 +22,9 @@ def mk_cmd(raw_cmd):
 def din(sock, cnt):
     msg = sock.recv(cnt)
     if len(msg) < 300:
-        print(f"\033[1;34;40m[->]\033[0m {msg}")
+        print("\033[1;34;40m[->]\033[0m {}".format(msg))
     else:
-        print(f"\033[1;34;40m[->]\033[0m {msg[:80]}......{msg[-80:]}")
+        print("\033[1;34;40m[->]\033[0m {}......{}".format(msg[:80], msg[-80:]))
     return msg.decode()
 
 def dout(sock, msg):
@@ -32,9 +32,9 @@ def dout(sock, msg):
         msg = msg.encode()
     sock.send(msg)
     if len(msg) < 300:
-        print(f"\033[1;32;40m[<-]\033[0m {msg}")
+        print("\033[1;32;40m[<-]\033[0m {}".format(msg))
     else:
-        print(f"\033[1;32;40m[<-]\033[0m {msg[:80]}......{msg[-80:]}")
+        print("\033[1;32;40m[<-]\033[0m {}......{}".format(msg[:80], msg[-80:]))
 
 def decode_shell_result(s):
     return "\n".join(s.split("\r\n")[1:-1])
@@ -58,7 +58,7 @@ class Remote:
         return buf
 
     def shell_cmd(self, cmd):
-        self.send(mk_cmd_arr(['system.exec', f"{cmd}"]))
+        self.send(mk_cmd_arr(['system.exec', "{}".format(cmd)]))
         buf = self.recv()
         return buf
 
@@ -118,10 +118,10 @@ def runserver(rhost, rport, lhost, lport, passwd):
 
     # auth 
     if passwd:
-        remote.do(f"AUTH {passwd}")
+        remote.do("AUTH {}".format(passwd))
     
     # slave of
-    remote.do(f"SLAVEOF {lhost} {lport}")
+    remote.do("SLAVEOF {} {}".format(lhost, lport))
 
     # read original config
     dbfilename = remote.do("CONFIG GET dbfilename").split(CLRF)[-2]
@@ -168,6 +168,6 @@ if __name__ == '__main__':
     if not options.rh or not options.lh:
         parser.error("Invalid arguments")
     #runserver("127.0.0.1", 6379, "127.0.0.1", 21000)
-    print(f"TARGET {options.rh}:{options.rp}")
-    print(f"SERVER {options.lh}:{options.lp}")
+    print("TARGET {}:{}".format(options.rh, options.rp))
+    print("SERVER {}:{}".format(options.lh, options.lp))
     runserver(options.rh, options.rp, options.lh, options.lp, options.passwd)
