@@ -31,7 +31,7 @@ python3 redis-rogue-server.py --rhost <target address> --rport <target port> --l
 
 ### 攻击场景2 - 通过SSRF攻击Redis
 
-在SSRF的常见下，可以使用`--server-only`选项
+在SSRF的场景下，可以使用`--server-only`选项
 
 ```bash
 python3 redis-rogue-server.py --server-only
