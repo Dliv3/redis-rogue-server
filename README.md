@@ -12,7 +12,7 @@ Redis 4.x/Redis 5.x RCE利用脚本, 涉及技术点可参考 [Redis post-exploi
 
 项目自带了一个编译好的的exp.so文件, 可直接使用
 
-### 攻击场景1 - Redis未授权访问/已知口令
+### 攻击场景1 - Redis未授权访问/已知Redis口令
 
 启动redis rogue server，并主动连接目标redis服务发起攻击
 
@@ -29,7 +29,7 @@ python3 redis-rogue-server.py --rhost <target address> --rport <target port> --l
 
 攻击成功之后，你会得到一个交互式shell
 
-### 攻击场景2 - SSRF
+### 攻击场景2 - 通过SSRF攻击Redis
 
 在SSRF的常见下，可以使用`--server-only`选项
 
