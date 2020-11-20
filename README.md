@@ -4,7 +4,7 @@ Redis 4.x/Redis 5.x RCE利用脚本, 涉及技术点可参考 [Redis post-exploi
 
 经测试Redis 5.0.8也可以使用，没有出现ppt上写的5.0无法set/get config的情况.
 
-## Usage:
+## Usage
 
 编译.so模块, 代码: <https://github.com/n0b0dyCN/RedisModules-ExecuteCommand>.
 
@@ -47,3 +47,19 @@ python3 redis-rogue-server.py --server-only
 
 参数说明：
 - `--server-only` 仅启动redis rogue server, 接受目标redis的连接，不主动发起连接
+
+## Copyright
+
+本项目为[n0b0dyCN](https://github.com/n0b0dyCN)同名项目的fork, 在原项目代码基础之上修复了一些bug, 添加了一些新功能, 并针对不同漏洞利用场景做了一些优化。
+
+因原作者删掉了原始repo, 所以直接挂到了我下面。
+
+本项目版权归[Dliv3](https://github.com/Dliv3)和[n0b0dyCN](https://github.com/n0b0dyCN)所有。
+
+# 404StarLink 2.0 - Galaxy
+
+![](https://github.com/knownsec/404StarLink-Project/raw/master/logo.png)
+
+[Redis Rogue Server](https://github.com/Dliv3/redis-rogue-server) 是 404Team [星链计划2.0](https://github.com/knownsec/404StarLink2.0-Galaxy)中的一环，如果对[Redis Rogue Server](https://github.com/Dliv3/redis-rogue-server)有任何疑问又或是想要找小伙伴交流，可以参考星链计划的加群方式。
+
+- [https://github.com/knownsec/404StarLink2.0-Galaxy#community](https://github.com/knownsec/404StarLink2.0-Galaxy#community)
